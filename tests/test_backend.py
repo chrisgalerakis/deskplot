@@ -85,7 +85,7 @@ def test_browser_fallback_writes_html(monkeypatch):
     # naive prefix-stripping does not
     path = Path(url2pathname(urlparse(opened["url"]).path))
     assert path.exists()
-    content = path.read_text()
+    content = path.read_text(encoding="utf-8")
     assert "plotly-chart" in content
     assert "Fallback" in content
     path.unlink()
