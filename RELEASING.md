@@ -29,13 +29,20 @@ gh release create vX.Y.Z --title "deskplot vX.Y.Z" --notes-file - <<'EOF'
 EOF
 ```
 
-## 4. PyPI
+## 4. PyPI (automatic)
+
+Publishing the GitHub Release in step 3 triggers
+`.github/workflows/publish.yml`, which builds and uploads to PyPI via
+trusted publishing (OIDC — no API token involved). Watch the
+"Publish to PyPI" run under Actions, then verify:
+
+```bash
+curl -s https://pypi.org/pypi/deskplot/json | python3 -c "import json,sys; print(json.load(sys.stdin)['info']['version'])"
+```
+
+Manual fallback (if the workflow is unavailable):
 
 ```bash
 rm -rf dist && python -m build
-twine upload dist/*
+twine upload dist/*   # username __token__, password: PyPI API token
 ```
-
-Authentication: a PyPI API token (username `__token__`), either entered
-at the prompt or stored in `~/.pypirc`. Verify afterwards with a fresh
-venv: `pip install deskplot`, then run an example.
