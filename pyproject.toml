@@ -1,0 +1,67 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "deskplot"
+dynamic = ["version"]
+description = "Display Plotly charts in native desktop windows - non-blocking, dark-themed, brandable. A desktop chart viewer for Python."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+authors = [{ name = "Christos Galerakis" }]
+keywords = [
+    "plotly",
+    "charts",
+    "desktop",
+    "native-window",
+    "pywebview",
+    "visualization",
+    "dark-theme",
+    "finance",
+    "chart-viewer",
+    "interactive-charts",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Office/Business :: Financial",
+]
+dependencies = [
+    "plotly>=5.0",
+    "pandas>=1.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/chrisgalerakis/deskplot"
+Repository = "https://github.com/chrisgalerakis/deskplot"
+Changelog = "https://github.com/chrisgalerakis/deskplot/blob/main/CHANGELOG.md"
+Issues = "https://github.com/chrisgalerakis/deskplot/issues"
+
+[project.optional-dependencies]
+native = ["pywebview>=4.0"]
+image = ["kaleido"]
+dev = ["pytest>=7.0", "ruff>=0.4"]
+
+[tool.hatch.version]
+path = "src/deskplot/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/deskplot"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
