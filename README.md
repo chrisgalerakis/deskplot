@@ -19,9 +19,9 @@ fig.set_title("My First deskplot Chart")
 fig.show()   # opens a native desktop window — your script keeps running
 ```
 
-![deskplot — Plotly charts, native windows: four native windows showing dark and light themes, a regression scatter, subplots with volume, and an interactive data table](docs/images/hero_banner.png)
+![deskplot — Plotly charts, native windows: four native windows showing dark and light themes, a regression scatter, subplots with volume, and an interactive data table](https://raw.githubusercontent.com/chrisgalerakis/deskplot/main/docs/images/hero_banner.png)
 
-*Four native windows from the bundled [examples](examples/): dark and light theme (toggled in-window), subplots, a regression scatter, and the interactive table viewer — each with the branded header bar, one-click export, and grouped toolbar.*
+*Four native windows from the bundled [examples](https://github.com/chrisgalerakis/deskplot/tree/main/examples): dark and light theme (toggled in-window), subplots, a regression scatter, and the interactive table viewer — each with the branded header bar, one-click export, and grouped toolbar.*
 
 ## Who is this for?
 
@@ -59,8 +59,6 @@ pip install "deskplot[native]"  # + pywebview for native desktop windows
 pip install "deskplot[image]"   # + kaleido for save_image() static export
 ```
 
-> **Note:** until the first PyPI release you can install straight from a local clone: `pip install /path/to/deskplot`
-
 Python 3.10+. Works on macOS out of the box; on Windows pywebview uses the built-in WebView2 runtime; on Linux it needs GTK or Qt (see [pywebview's installation guide](https://pywebview.flowrl.com/guide/installation.html)).
 
 ## Quickstart
@@ -96,7 +94,7 @@ fig.show(title="Price & Volume")
 
 A beta regression of AAPL daily returns on the S&P 500, fetched with [yfinance](https://github.com/ranaroussi/yfinance) (synthetic fallback when offline):
 
-![The deskplot native window rendering the AAPL vs S&P 500 regression](docs/images/native_window.png)
+![The deskplot native window rendering the AAPL vs S&P 500 regression](https://raw.githubusercontent.com/chrisgalerakis/deskplot/main/docs/images/native_window.png)
 
 ```python
 import numpy as np
@@ -119,7 +117,7 @@ fig.add_source_annotation("Yahoo Finance, 2y daily")
 fig.show()
 ```
 
-Full runnable version: [`examples/05_regression_aapl_spx.py`](examples/05_regression_aapl_spx.py).
+Full runnable version: [`examples/05_regression_aapl_spx.py`](https://github.com/chrisgalerakis/deskplot/blob/main/examples/05_regression_aapl_spx.py).
 
 ### A pandas DataFrame as an interactive table
 
@@ -205,6 +203,10 @@ Set options **before** creating figures — they are applied when a `ChartFigure
 
 deskplot was extracted from an internal systematic-macro research toolchain, where it renders positioning models and backtest dashboards daily.
 
+## Contributing
+
+Issues and pull requests are welcome — see [CONTRIBUTING.md](https://github.com/chrisgalerakis/deskplot/blob/main/CONTRIBUTING.md).
+
 ## License
 
-[MIT](LICENSE)
+[MIT](https://github.com/chrisgalerakis/deskplot/blob/main/LICENSE)
