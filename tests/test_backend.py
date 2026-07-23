@@ -1,4 +1,6 @@
 from pathlib import Path
+from urllib.parse import urlparse
+from urllib.request import url2pathname
 
 import pandas as pd
 
@@ -79,7 +81,9 @@ def test_browser_fallback_writes_html(monkeypatch):
     )
     _fig().show(title="Fallback", external=True)
     assert opened["url"].startswith("file://")
-    path = Path(opened["url"].removeprefix("file://"))
+    # url2pathname handles Windows URIs (file:///C:/...) correctly;
+    # naive prefix-stripping does not
+    path = Path(url2pathname(urlparse(opened["url"]).path))
     assert path.exists()
     content = path.read_text()
     assert "plotly-chart" in content
