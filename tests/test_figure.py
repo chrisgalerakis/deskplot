@@ -73,6 +73,82 @@ def test_axis_font_sizes_apply_to_all_subplot_axes():
     assert fig.layout.xaxis2.tickfont.size == 15
 
 
+def _shown_quietly(fig, monkeypatch, **kwargs):
+    monkeypatch.setattr("deskplot.backend.webbrowser.open", lambda url: None)
+    fig.show(external=True, **kwargs)
+    return [a.text for a in fig.layout.annotations if a.text and "Source:" in a.text]
+
+
+def test_auto_source_off_by_default(monkeypatch):
+    deskplot.configure(source="Vendor")
+    fig = ChartFigure()
+    assert _shown_quietly(fig, monkeypatch) == []
+
+
+def test_auto_source_adds_annotation_once(monkeypatch):
+    deskplot.configure(source="Vendor", auto_source=True)
+    fig = ChartFigure()
+    assert len(_shown_quietly(fig, monkeypatch)) == 1
+    # Second show must not duplicate
+    assert len(_shown_quietly(fig, monkeypatch)) == 1
+
+
+def test_auto_source_noop_without_source(monkeypatch):
+    deskplot.configure(auto_source=True)  # source stays ""
+    fig = ChartFigure()
+    assert _shown_quietly(fig, monkeypatch) == []
+
+
+def test_show_source_false_suppresses(monkeypatch):
+    deskplot.configure(source="Vendor", auto_source=True)
+    fig = ChartFigure()
+    assert _shown_quietly(fig, monkeypatch, source=False) == []
+
+
+def test_show_source_true_forces(monkeypatch):
+    deskplot.configure(source="Vendor")  # auto_source off
+    fig = ChartFigure()
+    assert len(_shown_quietly(fig, monkeypatch, source=True)) == 1
+
+
+def test_explicit_annotation_beats_global_auto(monkeypatch):
+    deskplot.configure(source="Global Vendor", auto_source=True)
+    fig = ChartFigure()
+    fig.add_source_annotation("Per-Chart Vendor", include_date=False)
+    texts = _shown_quietly(fig, monkeypatch)
+    assert texts == ["Source: Per-Chart Vendor"]  # not duplicated, not global
+
+
+def test_show_source_string_sets_per_chart_source(monkeypatch):
+    deskplot.configure(source="Global Vendor", auto_source=True)
+    fig = ChartFigure()
+    texts = _shown_quietly(fig, monkeypatch, source="Bloomberg L.P.")
+    assert len(texts) == 1 and texts[0].startswith("Source: Bloomberg L.P.")
+
+
+def test_show_source_empty_string_suppresses(monkeypatch):
+    deskplot.configure(source="Global Vendor", auto_source=True)
+    fig = ChartFigure()
+    assert _shown_quietly(fig, monkeypatch, source="") == []
+
+
+def test_show_source_string_does_not_override_explicit(monkeypatch):
+    deskplot.configure(auto_source=True, source="Global Vendor")
+    fig = ChartFigure()
+    fig.add_source_annotation("First Wins", include_date=False)
+    texts = _shown_quietly(fig, monkeypatch, source="Second Ignored")
+    assert texts == ["Source: First Wins"]
+
+
+def test_wrapped_pre_annotated_figure_not_double_stamped(monkeypatch):
+    deskplot.configure(source="Global Vendor", auto_source=True)
+    inner = ChartFigure()
+    inner.add_source_annotation("Inner Vendor", include_date=False)
+    wrapped = ChartFigure(fig=inner)  # fresh _source_added flag
+    texts = _shown_quietly(wrapped, monkeypatch)
+    assert texts == ["Source: Inner Vendor"]
+
+
 def test_hline_with_label():
     fig = ChartFigure().add_hline_with_label(y=5.0, label="Level")
     assert any(a.text == "Level" for a in fig.layout.annotations)

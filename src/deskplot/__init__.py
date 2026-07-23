@@ -14,7 +14,7 @@ from deskplot.figure import ChartFigure, show_table
 from deskplot.backend import create_backend, get_backend
 from deskplot.style import ChartStyle, de_increasing_color_list
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     "ChartFigure",

@@ -4,6 +4,23 @@ All notable changes to deskplot are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] - 2026-07-23
+
+### Added
+- `auto_source` config option (default off): when enabled together with a
+  configured `source`, `ChartFigure.show()` automatically adds the
+  bottom-left source annotation to figures that don't already have one
+  (never duplicated across repeated shows). Per-figure override:
+  `fig.show(source=True)` forces it, `fig.show(source=False)` suppresses.
+
+### Fixed
+- Windows CI: two test-suite portability bugs (file-URI→path conversion,
+  UTF-8 read of generated HTML). Package code unaffected.
+
+### Changed
+- README: absolute image/link URLs so the PyPI project page renders
+  correctly; native-window hero banner; post-launch cleanups.
+
 ## [0.1.0] - 2026-07-23
 
 Initial public release.

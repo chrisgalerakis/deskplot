@@ -44,6 +44,7 @@ class ChartFigure(go.Figure):
         self._style = get_chart_style()
         self._style.apply_style()
         self._title = ""
+        self._source_added = False
         self._source = get_config().source
 
         # Apply default layout
@@ -196,6 +197,7 @@ class ChartFigure(go.Figure):
         if not source:
             return self
         self._source = source
+        self._source_added = True
         text = f"Source: {source}"
         if include_date:
             text += f" | {datetime.now().strftime('%Y/%m/%d')}"
@@ -398,10 +400,20 @@ class ChartFigure(go.Figure):
 
         return fig
 
+    def _has_source_annotation(self) -> bool:
+        """True if a source annotation exists (however it was added)."""
+        if self._source_added:
+            return True
+        return any(
+            a.text and str(a.text).startswith("Source:")
+            for a in (self.layout.annotations or ())
+        )
+
     def show(
         self,
         title: Optional[str] = None,
         external: bool = False,
+        source: Union[bool, str, None] = None,
         **kwargs: Any,
     ) -> None:
         """Display the figure in a native window.
@@ -409,7 +421,22 @@ class ChartFigure(go.Figure):
         Args:
             title: Window title override
             external: Force browser display instead of native window
+            source: Per-figure source control. A string sets this chart's
+                own source text; True forces the configured global source;
+                False suppresses auto-sourcing; None (default) follows
+                ``configure(auto_source=...)``. A source already added via
+                ``add_source_annotation()`` always takes priority — auto
+                never overwrites and never duplicates.
         """
+        cfg = get_config()
+        if not self._has_source_annotation():
+            # Empty string means "no source" (project-wide convention),
+            # so it falls through to the suppress path below
+            if isinstance(source, str) and source:
+                self.add_source_annotation(source)
+            elif source or (source is None and cfg.auto_source and cfg.source):
+                self.add_source_annotation()
+
         backend = get_backend()
 
         if external:

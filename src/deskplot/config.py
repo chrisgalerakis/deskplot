@@ -24,6 +24,12 @@ class Config:
         color_accent: Accent color for drawing tools (trend lines, shapes).
         source: Default source attribution for charts and tables. Empty
             string means no attribution is rendered unless passed explicitly.
+        auto_source: When True and ``source`` is set, ``ChartFigure.show()``
+            automatically adds the source annotation (bottom-left) to any
+            figure that doesn't have one. A per-figure source always wins:
+            ``fig.add_source_annotation("X")`` or ``fig.show(source="X")``
+            override the global text; ``fig.show(source=False)`` suppresses;
+            auto never overwrites or duplicates an existing source.
         chart_title: Fallback window title for charts.
         table_title: Fallback window title for tables.
         export_prefix: Filename prefix for exported PNG/CSV files.
@@ -43,6 +49,7 @@ class Config:
     color_secondary: str = "#e0e0e0"
     color_accent: str = "#5b9aff"
     source: str = ""
+    auto_source: bool = False
     chart_title: str = "Interactive Chart"
     table_title: str = "Data Table"
     export_prefix: str = "chart"

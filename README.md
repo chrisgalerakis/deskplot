@@ -167,6 +167,7 @@ Without pywebview, the same HTML opens via `webbrowser` — identical rendering,
 | `color_secondary` | `"#e0e0e0"` | Secondary brand text color |
 | `color_accent` | `"#5b9aff"` | Drawing-tool accent (trend lines, shapes) |
 | `source` | `""` | Default source attribution (hidden when empty) |
+| `auto_source` | `False` | Auto-add the source annotation on `show()` when `source` is set; per-figure override via `fig.show(source=True/False)` |
 | `chart_title` | `"Interactive Chart"` | Fallback chart window title |
 | `table_title` | `"Data Table"` | Fallback table window title |
 | `export_prefix` | `"chart"` | Filename prefix for PNG/CSV exports |
