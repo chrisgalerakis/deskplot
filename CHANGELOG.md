@@ -15,6 +15,12 @@ versioning follows [Semantic Versioning](https://semver.org/).
   keys mirror `Config` fields; precedence is defaults < file <
   `configure()`; unknown keys and bad TOML warn instead of crashing.
   Uses stdlib `tomllib` (with the `tomli` backport on Python 3.10).
+- `color_brand` config option: color for the brand text (wordmark) in
+  chart and table headers, decoupled from the button/control color.
+  Defaults to `None` = fall back to `color_primary` (no visual change).
+- `show_header_timestamp` config option (default `True`): set `False` to
+  drop the render-time timestamp from the header bar — useful when it
+  could be confused with a chart's own as-of date on screenshots.
 
 ### Changed
 - pywebview is now a default dependency: a plain `pip install deskplot`

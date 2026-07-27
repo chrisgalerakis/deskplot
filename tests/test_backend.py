@@ -91,6 +91,41 @@ def test_browser_fallback_writes_html(monkeypatch):
     path.unlink()
 
 
+def test_color_brand_decouples_wordmark_from_buttons():
+    deskplot.configure(color_brand="#ffffff", color_primary="#123456")
+    html = _create_chart_html(_fig(), title="T")
+    # White wordmark, blue-ish buttons — previously impossible
+    assert 'color: #ffffff;">deskplot</span>' in html
+    assert "background: #123456" in html
+
+
+def test_color_brand_defaults_to_color_primary():
+    html = _create_chart_html(_fig(), title="T")
+    assert 'color: #5b9aff;">deskplot</span>' in html
+
+
+def test_table_logo_uses_color_brand():
+    deskplot.configure(color_brand="#ffffff")
+    html = _create_table_html(pd.DataFrame({"A": [1]}), title="T")
+    logo_css = html.split(".logo-text {")[1].split("}")[0]
+    assert "color: #ffffff;" in logo_css
+
+
+def test_header_timestamp_shown_by_default():
+    html = _create_chart_html(_fig(), title="T")
+    assert 'id="timestamp-text"' in html
+    table = _create_table_html(pd.DataFrame({"A": [1]}), title="T")
+    assert '<div class="timestamp">' in table
+
+
+def test_header_timestamp_can_be_hidden():
+    deskplot.configure(show_header_timestamp=False)
+    html = _create_chart_html(_fig(), title="T")
+    assert 'id="timestamp-text"' not in html
+    table = _create_table_html(pd.DataFrame({"A": [1]}), title="T")
+    assert '<div class="timestamp">' not in table
+
+
 def test_browser_fallback_warns_loudly(monkeypatch, capsys):
     import deskplot.backend as backend_mod
 

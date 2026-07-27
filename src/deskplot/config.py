@@ -52,6 +52,9 @@ class Config:
         brand: Primary brand text shown in the window header bar.
         brand_secondary: Optional secondary brand text (rendered after a
             separator). Empty string hides it.
+        color_brand: Color for the primary brand text (wordmark). ``None``
+            (the default) falls back to ``color_primary``, so setting it is
+            only needed to decouple the wordmark from the button color.
         color_primary: Accent color for the primary brand text and buttons.
         color_secondary: Color for the secondary brand text.
         color_accent: Accent color for drawing tools (trend lines, shapes).
@@ -68,6 +71,9 @@ class Config:
         export_prefix: Filename prefix for exported PNG/CSV files.
         window_title_format: Format string for native window titles.
             Receives ``{brand}`` and ``{title}``.
+        show_header_timestamp: Render the live render-time timestamp in the
+            window header bar (chart and table). Set False when it could be
+            confused with a chart's own as-of date on screenshots.
         log_prefix: Prefix for console messages.
         axis_tick_font_size: Font size of x/y axis tick labels.
         axis_title_font_size: Font size of x/y axis titles.
@@ -78,6 +84,7 @@ class Config:
 
     brand: str = "deskplot"
     brand_secondary: str = ""
+    color_brand: Optional[str] = None
     color_primary: str = "#5b9aff"
     color_secondary: str = "#e0e0e0"
     color_accent: str = "#5b9aff"
@@ -87,6 +94,7 @@ class Config:
     table_title: str = "Data Table"
     export_prefix: str = "chart"
     window_title_format: str = "{brand} - {title}"
+    show_header_timestamp: bool = True
     log_prefix: str = "[deskplot]"
     axis_tick_font_size: int = 11
     axis_title_font_size: int = 12

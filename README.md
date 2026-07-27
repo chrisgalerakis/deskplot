@@ -166,6 +166,7 @@ If pywebview is unavailable (headless server, missing OS webview), the same HTML
 |---|---|---|
 | `brand` | `"deskplot"` | Primary text in the window header bar |
 | `brand_secondary` | `""` | Secondary header text (hidden when empty) |
+| `color_brand` | `None` | Brand text (wordmark) color; falls back to `color_primary` |
 | `color_primary` | `"#5b9aff"` | Brand text + button accent color |
 | `color_secondary` | `"#e0e0e0"` | Secondary brand text color |
 | `color_accent` | `"#5b9aff"` | Drawing-tool accent (trend lines, shapes) |
@@ -175,6 +176,7 @@ If pywebview is unavailable (headless server, missing OS webview), the same HTML
 | `table_title` | `"Data Table"` | Fallback table window title |
 | `export_prefix` | `"chart"` | Filename prefix for PNG/CSV exports |
 | `window_title_format` | `"{brand} - {title}"` | Native window title format |
+| `show_header_timestamp` | `True` | Render-time timestamp in the header bar; disable when it could be confused with the data's as-of date |
 | `log_prefix` | `"[deskplot]"` | Prefix for console messages |
 | `axis_tick_font_size` | `11` | Font size of x/y axis tick labels |
 | `axis_title_font_size` | `12` | Font size of x/y axis titles |

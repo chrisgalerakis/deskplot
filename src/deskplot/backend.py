@@ -56,7 +56,8 @@ def _hex_to_rgba(hex_color: str, alpha: float) -> str:
 def _brand_header_html() -> str:
     """Build the brand text block for the window header bar."""
     cfg = get_config()
-    html = f'<span style="color: {cfg.color_primary};">{cfg.brand}</span>'
+    brand_color = cfg.color_brand or cfg.color_primary
+    html = f'<span style="color: {brand_color};">{cfg.brand}</span>'
     if cfg.brand_secondary:
         html += (
             f' <span style="color: #2a3a5a; text-shadow: none;">|</span>'
@@ -75,6 +76,11 @@ def _create_chart_html(
     cfg = get_config()
     title = title or cfg.chart_title
     timestamp = datetime.now().strftime("%A, %B %d, %Y at %H:%M")
+    timestamp_html = (
+        f'<div id="timestamp-text" style="font-size: 12px; color: #888888;">'
+        f'{timestamp}</div>'
+        if cfg.show_header_timestamp else ''
+    )
     accent_fill = _hex_to_rgba(cfg.color_accent, 0.2)
 
     # Set autosize for responsive layout (no hardcoded dimensions)
@@ -164,7 +170,7 @@ def _create_chart_html(
                     white-space: nowrap;
                     font-size: 14px; color: #c0c8d8;">{title}</div>
         <div style="display: flex; align-items: center; gap: 15px;">
-            <div id="timestamp-text" style="font-size: 12px; color: #888888;">{timestamp}</div>
+            {timestamp_html}
             <button id="export-btn" style="
                 background: {cfg.color_primary};
                 color: white;
@@ -663,6 +669,10 @@ def _create_table_html(
     source = source or cfg.source
     source_html = f'<div class="source">Source: {source}</div>' if source else ''
     timestamp = datetime.now().strftime("%A, %B %d, %Y at %H:%M")
+    timestamp_html = (
+        f'<div class="timestamp">{timestamp}</div>'
+        if cfg.show_header_timestamp else ''
+    )
     # Escape "</" so cell content like "</script>" cannot terminate the
     # script block the data is embedded in.
     json_data = df.to_json(orient="split", date_format="iso").replace("</", "<\\/")
@@ -693,7 +703,7 @@ def _create_table_html(
             font-family: 'Segoe UI', Arial, sans-serif;
             font-size: 18px;
             font-weight: bold;
-            color: {cfg.color_primary};
+            color: {cfg.color_brand or cfg.color_primary};
             letter-spacing: 2px;
         }}
         .title {{
@@ -778,7 +788,7 @@ def _create_table_html(
         <div class="logo-text">{cfg.brand}</div>
         <div class="title">{title}</div>
         <div class="header-right">
-            <div class="timestamp">{timestamp}</div>
+            {timestamp_html}
             <button class="export-btn" onclick="exportCSV()">Export CSV</button>
         </div>
     </div>
