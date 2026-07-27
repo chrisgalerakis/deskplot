@@ -4,6 +4,15 @@ All notable changes to deskplot are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+- Window title is now truly centered in chart and table headers. It was
+  previously centered between two unequal flex flanks (brand block vs
+  timestamp/buttons), rendering visibly off-center in live windows and
+  exported PNGs. Long titles now ellipsize instead of colliding with the
+  header controls.
+
 ## [0.2.0] - 2026-07-23
 
 ### Added

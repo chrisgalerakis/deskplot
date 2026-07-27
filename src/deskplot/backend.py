@@ -159,7 +159,10 @@ def _create_chart_html(
         font-family: 'Segoe UI', Arial, sans-serif;
     ">
         <div style="font-size: 18px; font-weight: bold; letter-spacing: 2px; text-shadow: 0 0 12px rgba(91,154,255,0.3), 0 1px 2px rgba(0,0,0,0.5);">{_brand_header_html()}</div>
-        <div style="font-size: 14px; color: #c0c8d8;">{title}</div>
+        <div style="position: absolute; left: 50%; transform: translateX(-50%);
+                    max-width: 55vw; overflow: hidden; text-overflow: ellipsis;
+                    white-space: nowrap;
+                    font-size: 14px; color: #c0c8d8;">{title}</div>
         <div style="display: flex; align-items: center; gap: 15px;">
             <div id="timestamp-text" style="font-size: 12px; color: #888888;">{timestamp}</div>
             <button id="export-btn" style="
@@ -677,6 +680,7 @@ def _create_table_html(
         * {{ margin: 0; padding: 0; box-sizing: border-box; }}
         html, body {{ width: 100%; height: 100%; background-color: #06080e; overflow: hidden; }}
         #header {{
+            position: relative;
             height: 50px;
             background: linear-gradient(90deg, #06080e 0%, #0c1628 25%, #142a4a 50%, #0c1628 75%, #06080e 100%);
             display: flex;
@@ -693,6 +697,13 @@ def _create_table_html(
             letter-spacing: 2px;
         }}
         .title {{
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 55vw;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
             font-family: 'Segoe UI', Arial, sans-serif;
             font-size: 14px;
             color: #ffffff;

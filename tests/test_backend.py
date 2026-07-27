@@ -105,6 +105,37 @@ def test_table_html_escapes_script_terminator_in_cells():
     assert "<\\/script>" in html
 
 
+def _title_div(html: str, title: str) -> str:
+    """Return the style attribute of the header div holding the title."""
+    for chunk in html.split("<div"):
+        if f">{title}</div>" in chunk:
+            return chunk
+    raise AssertionError(f"no header div found for title {title!r}")
+
+
+def test_chart_title_is_absolutely_centered():
+    # Flex space-between centers the middle child between unequal flanks;
+    # the title must be centered against the header itself instead.
+    html = _create_chart_html(_fig(), title="Centered Title")
+    style = _title_div(html, "Centered Title")
+    assert "position: absolute" in style
+    assert "left: 50%" in style
+    assert "translateX(-50%)" in style
+    assert "text-overflow: ellipsis" in style
+
+
+def test_table_title_is_absolutely_centered():
+    df = pd.DataFrame({"A": [1]})
+    html = _create_table_html(df, title="Tbl Title")
+    # .title is absolutely centered inside the (relative) #header
+    assert "position: relative" in html.split("#header")[1].split("}")[0]
+    title_css = html.split(".title {")[1].split("}")[0]
+    assert "position: absolute" in title_css
+    assert "left: 50%" in title_css
+    assert "translateX(-50%)" in title_css
+    assert "text-overflow: ellipsis" in title_css
+
+
 def test_table_html_uses_default_brand():
     df = pd.DataFrame({"A": [1]})
     table = _create_table_html(df)
