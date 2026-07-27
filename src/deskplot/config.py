@@ -6,9 +6,42 @@ import time. Customize via :func:`configure`:
 
     import deskplot
     deskplot.configure(brand="MY DESK", color_accent="#00ACFF", source="My Research")
+
+Persistent configuration lives in a ``deskplot.toml`` file whose keys
+mirror :class:`Config` fields as a flat table::
+
+    brand = "MY DESK"
+    color_accent = "#00ACFF"
+    source = "My Research"
+
+The file is discovered lazily on first :func:`get_config` /
+:func:`configure` call, checking in order:
+
+1. ``$DESKPLOT_CONFIG`` — explicit file path, wins when set;
+2. ``deskplot.toml`` in the current working directory;
+3. ``deskplot.toml`` in the per-user config directory (hand-rolled,
+   no ``platformdirs`` dependency: ``%APPDATA%\\deskplot`` on Windows,
+   ``~/Library/Application Support/deskplot`` on macOS,
+   ``$XDG_CONFIG_HOME/deskplot`` or ``~/.config/deskplot`` elsewhere).
+
+Precedence: dataclass defaults < ``deskplot.toml`` < ``configure()``
+calls. Unknown keys and unreadable files warn instead of crashing.
 """
 
+import os
+import sys
+import warnings
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Optional
+
+try:
+    import tomllib  # Python 3.11+
+except ModuleNotFoundError:
+    import tomli as tomllib  # Python 3.10 backport (conditional dependency)
+
+CONFIG_FILENAME = "deskplot.toml"
+CONFIG_PATH_ENV_VAR = "DESKPLOT_CONFIG"
 
 
 @dataclass
@@ -61,6 +94,71 @@ class Config:
 
 _config = Config()
 
+# deskplot.toml is applied at most once per process, lazily on the first
+# get_config()/configure() call — not at import time.
+_file_config_loaded = False
+
+
+def _user_config_dir() -> Path:
+    """Per-user config directory for deskplot on the current platform."""
+    if sys.platform == "win32":
+        base = os.environ.get("APPDATA") or str(Path.home() / "AppData" / "Roaming")
+        return Path(base) / "deskplot"
+    if sys.platform == "darwin":
+        return Path.home() / "Library" / "Application Support" / "deskplot"
+    base = os.environ.get("XDG_CONFIG_HOME") or str(Path.home() / ".config")
+    return Path(base) / "deskplot"
+
+
+def _find_config_file() -> Optional[Path]:
+    """Locate deskplot.toml: $DESKPLOT_CONFIG > cwd > user config dir."""
+    env_path = os.environ.get(CONFIG_PATH_ENV_VAR)
+    if env_path:
+        path = Path(env_path)
+        if path.is_file():
+            return path
+        warnings.warn(
+            f"deskplot: ${CONFIG_PATH_ENV_VAR} points to {path}, which does"
+            " not exist; ignoring it",
+            stacklevel=4,
+        )
+        return None
+    for candidate in (
+        Path.cwd() / CONFIG_FILENAME,
+        _user_config_dir() / CONFIG_FILENAME,
+    ):
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def _load_file_config() -> None:
+    """Apply deskplot.toml (if any) to the global config, once."""
+    global _file_config_loaded
+    if _file_config_loaded:
+        return
+    _file_config_loaded = True
+
+    path = _find_config_file()
+    if path is None:
+        return
+    try:
+        data = tomllib.loads(path.read_text(encoding="utf-8"))
+    except (OSError, tomllib.TOMLDecodeError) as exc:
+        warnings.warn(
+            f"deskplot: could not read {path} ({exc}); using defaults",
+            stacklevel=4,
+        )
+        return
+    for key, value in data.items():
+        if key not in Config.__dataclass_fields__:
+            warnings.warn(
+                f"deskplot: unknown option {key!r} in {path}; ignoring it",
+                stacklevel=4,
+            )
+            continue
+        setattr(_config, key, value)
+
 
 def configure(**kwargs) -> Config:
     """Update deskplot's global configuration.
@@ -74,6 +172,7 @@ def configure(**kwargs) -> Config:
     Raises:
         TypeError: If an unknown option is passed.
     """
+    _load_file_config()
     for key, value in kwargs.items():
         if not hasattr(_config, key):
             valid = ", ".join(Config.__dataclass_fields__)
@@ -86,4 +185,5 @@ def configure(**kwargs) -> Config:
 
 def get_config() -> Config:
     """Return the global :class:`Config` instance."""
+    _load_file_config()
     return _config

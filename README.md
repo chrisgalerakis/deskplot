@@ -181,6 +181,26 @@ If pywebview is unavailable (headless server, missing OS webview), the same HTML
 
 Set options **before** creating figures — they are applied when a `ChartFigure` is constructed.
 
+### Persistent configuration: `deskplot.toml`
+
+Instead of calling `deskplot.configure()` in every entry point, put a `deskplot.toml` next to your project (or once per machine) and deskplot picks it up automatically. Keys mirror the config options above as a flat table:
+
+```toml
+brand = "MY DESK"
+brand_secondary = "RESEARCH"
+color_accent = "#00ACFF"
+source = "My Research"
+auto_source = true
+```
+
+The file is discovered on first use, checking in order:
+
+1. `$DESKPLOT_CONFIG` — explicit path to a config file, wins when set;
+2. `deskplot.toml` in the current working directory;
+3. `deskplot.toml` in your user config directory — `%APPDATA%\deskplot` on Windows, `~/Library/Application Support/deskplot` on macOS, `$XDG_CONFIG_HOME/deskplot` (or `~/.config/deskplot`) on Linux.
+
+Precedence: built-in defaults < `deskplot.toml` < `configure()` calls. Unknown keys or an unreadable file produce a warning, never a crash.
+
 ## deskplot vs. alternatives
 
 | | deskplot | Plotly `fig.show()` | Dash | Qt/Tk embedding |

@@ -6,6 +6,16 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- `deskplot.toml` config file support: persistent configuration without
+  `configure()` calls. Discovered on first use from `$DESKPLOT_CONFIG`
+  (explicit path, wins), the current working directory, or the per-user
+  config dir (`%APPDATA%\deskplot`, `~/Library/Application
+  Support/deskplot`, or `$XDG_CONFIG_HOME`/`~/.config/deskplot`). Flat
+  keys mirror `Config` fields; precedence is defaults < file <
+  `configure()`; unknown keys and bad TOML warn instead of crashing.
+  Uses stdlib `tomllib` (with the `tomli` backport on Python 3.10).
+
 ### Changed
 - pywebview is now a default dependency: a plain `pip install deskplot`
   opens native desktop windows with no extras. Native windows are

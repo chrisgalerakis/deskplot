@@ -41,6 +41,7 @@ dependencies = [
     "plotly>=5.0",
     "pandas>=1.5",
     "pywebview>=4.0",
+    "tomli>=1.1.0; python_version < '3.11'",
 ]
 
 [project.urls]
