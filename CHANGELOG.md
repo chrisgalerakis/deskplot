@@ -6,6 +6,15 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- pywebview is now a default dependency: a plain `pip install deskplot`
+  opens native desktop windows with no extras. Native windows are
+  deskplot's purpose; the browser fallback remains only as graceful
+  degradation (headless boxes, SSH, missing OS webview) and now announces
+  itself with a loud multi-line warning instead of a single console line.
+- The `deskplot[native]` extra is deprecated and now a no-op alias; it
+  will be removed in a future release.
+
 ### Fixed
 - Window title is now truly centered in chart and table headers. It was
   previously centered between two unequal flex flanks (brand block vs

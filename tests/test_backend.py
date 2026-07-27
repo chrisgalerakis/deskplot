@@ -91,6 +91,21 @@ def test_browser_fallback_writes_html(monkeypatch):
     path.unlink()
 
 
+def test_browser_fallback_warns_loudly(monkeypatch, capsys):
+    import deskplot.backend as backend_mod
+
+    monkeypatch.setattr(backend_mod, "WEBVIEW_AVAILABLE", False)
+    monkeypatch.setattr(backend_mod.Backend, "_instance", None)
+    monkeypatch.setattr(backend_mod, "BACKEND", None)
+    backend_mod.create_backend()
+    out = capsys.readouterr().out
+    # Native windows are the intended experience — the fallback must not
+    # announce itself with a single easy-to-miss line
+    assert "native windows" in out.lower()
+    assert "pip install pywebview" in out
+    assert out.count("\n") >= 4
+
+
 def test_table_html_title_with_quote_is_js_safe():
     df = pd.DataFrame({"A": [1]})
     html = _create_table_html(df, title="O'Brien Desk")

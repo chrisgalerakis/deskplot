@@ -48,16 +48,19 @@ deskplot gives you a third option: **a real desktop chart viewer in one line of 
 - **One-click PNG export** — exports the full window including the branded header bar (chart captured via `Plotly.toImage`, header composited with vendored [html2canvas](https://html2canvas.hertzen.com/))
 - **Brandable header bar** — put your own name, colors, and attribution on every chart window with one `deskplot.configure()` call
 - **Interactive DataFrame tables** — display any pandas DataFrame as a sortable dark-themed table with CSV export
-- **Browser fallback** — no pywebview installed? Same HTML opens in your default browser. Nothing breaks.
+- **Graceful degradation** — if pywebview can't run (headless server, SSH session, missing OS webview), the same HTML opens in your default browser. Nothing breaks.
 - **Offline-safe** — Plotly.js and html2canvas are embedded into the generated HTML; no CDN calls at render time
 
 ## Installation
 
 ```bash
-pip install deskplot            # browser-fallback mode (plotly + pandas only)
-pip install "deskplot[native]"  # + pywebview for native desktop windows
+pip install deskplot            # native desktop windows out of the box
 pip install "deskplot[image]"   # + kaleido for save_image() static export
 ```
+
+The default install includes pywebview, so `fig.show()` opens a native
+window with no extras. (The old `deskplot[native]` extra still installs but
+is a deprecated no-op since 0.3.0.)
 
 Python 3.10+. Works on macOS out of the box; on Windows pywebview uses the built-in WebView2 runtime; on Linux it needs GTK or Qt (see [pywebview's installation guide](https://pywebview.flowrl.com/guide/installation.html)).
 
@@ -155,7 +158,7 @@ Every window now carries your identity — useful for research shops, newsletter
 - windows survive after the script exits,
 - multiple windows never interfere with each other or with your main process.
 
-Without pywebview, the same HTML opens via `webbrowser` — identical rendering, just in a tab.
+If pywebview is unavailable (headless server, missing OS webview), the same HTML opens via `webbrowser` — identical rendering, just in a tab. This is an edge-case fallback, not a mode: deskplot warns loudly when it triggers, because native windows are the intended experience.
 
 ## Configuration reference
 
@@ -187,7 +190,7 @@ Set options **before** creating figures — they are applied when a `ChartFigure
 | Non-blocking / multi-window | ✅ | ✅ (tabs) | ❌ | depends |
 | Styled dark theme out of the box | ✅ | ❌ | ❌ | ❌ |
 | In-window theme toggle, crosshair, branded export | ✅ | ❌ | build it yourself | build it yourself |
-| Extra runtime | pywebview (optional) | none | Flask server | Qt/Tk |
+| Extra runtime | pywebview (bundled) | none | Flask server | Qt/Tk |
 
 ## Limitations
 

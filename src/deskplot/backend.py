@@ -942,8 +942,18 @@ class Backend:
         if WEBVIEW_AVAILABLE:
             print(f"{log_prefix} pywebview backend ready - native windows enabled")
         else:
-            print(f"{log_prefix} pywebview not installed, using browser display")
-            print(f"{log_prefix} Install with: pip install pywebview")
+            for line in (
+                "=" * 62,
+                "WARNING: pywebview is unavailable - charts will open in",
+                "BROWSER TABS instead of native desktop windows.",
+                "Native windows are deskplot's intended experience; the",
+                "browser is only a fallback for headless/SSH sessions or a",
+                "missing OS webview. To fix: pip install pywebview",
+                "(on Linux also install its GTK or Qt system packages:",
+                "https://pywebview.flowrl.com/guide/installation.html)",
+                "=" * 62,
+            ):
+                print(f"{log_prefix} {line}")
 
         self._initialized = True
 

@@ -40,6 +40,7 @@ classifiers = [
 dependencies = [
     "plotly>=5.0",
     "pandas>=1.5",
+    "pywebview>=4.0",
 ]
 
 [project.urls]
@@ -49,7 +50,9 @@ Changelog = "https://github.com/chrisgalerakis/deskplot/blob/main/CHANGELOG.md"
 Issues = "https://github.com/chrisgalerakis/deskplot/issues"
 
 [project.optional-dependencies]
-native = ["pywebview>=4.0"]
+# Deprecated: pywebview is a default dependency since 0.3.0. Kept as an
+# empty alias so existing `pip install deskplot[native]` doesn't break.
+native = []
 image = ["kaleido"]
 dev = ["pytest>=7.0", "ruff>=0.4"]
 
