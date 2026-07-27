@@ -4,7 +4,7 @@ All notable changes to deskplot are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versioning follows [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.3.0] - 2026-07-27
 
 ### Added
 - `deskplot.toml` config file support: persistent configuration without
