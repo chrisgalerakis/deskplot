@@ -57,7 +57,11 @@ class Config:
             only needed to decouple the wordmark from the button color.
         color_primary: Accent color for the primary brand text and buttons.
         color_secondary: Color for the secondary brand text.
-        color_accent: Accent color for drawing tools (trend lines, shapes).
+        color_accent: Accent color for window chrome: drawing tools (trend
+            lines, shapes), hover spike lines, the custom crosshair, the
+            toolbar active-button state, and toolbar icon hover fill.
+        color_value_up: Color for positive numbers in the table viewer.
+        color_value_down: Color for negative numbers in the table viewer.
         source: Default source attribution for charts and tables. Empty
             string means no attribution is rendered unless passed explicitly.
         auto_source: When True and ``source`` is set, ``ChartFigure.show()``
@@ -88,6 +92,8 @@ class Config:
     color_primary: str = "#5b9aff"
     color_secondary: str = "#e0e0e0"
     color_accent: str = "#5b9aff"
+    color_value_up: str = "#00ACFF"
+    color_value_down: str = "#e4003a"
     source: str = ""
     auto_source: bool = False
     chart_title: str = "Interactive Chart"

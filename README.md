@@ -169,7 +169,9 @@ If pywebview is unavailable (headless server, missing OS webview), the same HTML
 | `color_brand` | `None` | Brand text (wordmark) color; falls back to `color_primary` |
 | `color_primary` | `"#5b9aff"` | Brand text + button accent color |
 | `color_secondary` | `"#e0e0e0"` | Secondary brand text color |
-| `color_accent` | `"#5b9aff"` | Drawing-tool accent (trend lines, shapes) |
+| `color_accent` | `"#5b9aff"` | Chrome accent: drawing tools, spike lines, crosshair, toolbar active state and icon hover |
+| `color_value_up` | `"#00ACFF"` | Positive numbers in the table viewer |
+| `color_value_down` | `"#e4003a"` | Negative numbers in the table viewer |
 | `source` | `""` | Default source attribution (hidden when empty) |
 | `auto_source` | `False` | Auto-add the source annotation on `show()` when `source` is set; per-figure override via `fig.show(source=True/False)` |
 | `chart_title` | `"Interactive Chart"` | Fallback chart window title |

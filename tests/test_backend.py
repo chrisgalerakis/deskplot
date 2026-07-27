@@ -126,6 +126,38 @@ def test_header_timestamp_can_be_hidden():
     assert '<div class="timestamp">' not in table
 
 
+def test_chart_chrome_follows_color_accent():
+    deskplot.configure(color_accent="#ff8800")
+    html = _create_chart_html(_fig(), title="T")
+    # Every chrome site follows color_accent: crosshair lines, toolbar
+    # active state, hover icon fill, spike lines (initial layout + theme
+    # toggle JS). The dark template's candlestick colors are chart data
+    # styling, not chrome, and stay independent.
+    assert "border-top: 1px dashed #ff8800" in html
+    assert "border-left: 1px dashed #ff8800" in html
+    assert "background-color: #ff8800 !important" in html
+    assert "fill: #ff8800 !important" in html
+    assert 'update[key + \'.spikecolor\'] = "#ff8800";' in html
+    assert 'setCrosshairColor("#ff8800");' in html
+    assert '"spikecolor":"#ff8800"' in html.replace('": "', '":"')
+    assert "#4FC3F7" not in html
+
+
+def test_table_value_colors_default_unchanged():
+    html = _create_table_html(pd.DataFrame({"A": [1]}), title="T")
+    assert "#00ACFF" in html
+    assert "#e4003a" in html
+
+
+def test_table_value_colors_follow_config():
+    deskplot.configure(color_value_up="#11aa22", color_value_down="#bb3344")
+    html = _create_table_html(pd.DataFrame({"A": [1]}), title="T")
+    assert "#11aa22" in html
+    assert "#bb3344" in html
+    assert "#00ACFF" not in html
+    assert "#e4003a" not in html
+
+
 def test_browser_fallback_warns_loudly(monkeypatch, capsys):
     import deskplot.backend as backend_mod
 

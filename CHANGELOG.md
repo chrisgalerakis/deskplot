@@ -21,8 +21,17 @@ versioning follows [Semantic Versioning](https://semver.org/).
 - `show_header_timestamp` config option (default `True`): set `False` to
   drop the render-time timestamp from the header bar — useful when it
   could be confused with a chart's own as-of date on screenshots.
+- `color_value_up` / `color_value_down` config options for the table
+  viewer's signed-value colors (defaults unchanged: `#00ACFF`/`#e4003a`).
 
 ### Changed
+- Window chrome colors now follow `configure()` instead of hardcoded
+  hexes: hover spike lines, the custom crosshair, the toolbar
+  active-button state, and toolbar icon hover fill all use
+  `color_accent`. Note: these were previously hardcoded `#00ACFF`/
+  `#4FC3F7`; with the default config they now render in deskplot's
+  accent `#5b9aff` — set `color_accent = "#00ACFF"` to restore the old
+  shade. Toolbar surface colors are hoisted to module-level constants.
 - pywebview is now a default dependency: a plain `pip install deskplot`
   opens native desktop windows with no extras. Native windows are
   deskplot's purpose; the browser fallback remains only as graceful

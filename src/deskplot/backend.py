@@ -29,6 +29,11 @@ except ImportError:
 
 BACKEND: Optional["Backend"] = None
 
+# Neutral dark toolbar surfaces. Deliberately constants rather than Config
+# fields — a fork that re-themes the toolbar edits one place.
+TOOLBAR_SURFACE_BG = "#1a1a2e"
+TOOLBAR_SURFACE_HOVER_BG = "#1a2030"
+
 # html2canvas (MIT, vendored) is inlined into generated HTML so PNG export
 # of the header bar works offline. See vendor/html2canvas.min.js.
 _HTML2CANVAS_PATH = Path(__file__).parent / "vendor" / "html2canvas.min.js"
@@ -82,6 +87,8 @@ def _create_chart_html(
         if cfg.show_header_timestamp else ''
     )
     accent_fill = _hex_to_rgba(cfg.color_accent, 0.2)
+    # JSON-encoded for safe interpolation into the generated JS below
+    accent_js = json.dumps(cfg.color_accent)
 
     # Set autosize for responsive layout (no hardcoded dimensions)
     fig_copy = go.Figure(fig)
@@ -99,14 +106,14 @@ def _create_chart_html(
         # Spike lines styling - dashed lines from hover point TO axis
         xaxis=dict(
             showspikes=False,  # Start OFF, toggle button will turn ON
-            spikecolor='#00ACFF',
+            spikecolor=cfg.color_accent,
             spikethickness=1,
             spikedash='dash',
             spikemode='toaxis',  # Extends TO the axis (not across entire plot)
         ),
         yaxis=dict(
             showspikes=False,  # Start OFF, toggle button will turn ON
-            spikecolor='#00ACFF',
+            spikecolor=cfg.color_accent,
             spikethickness=1,
             spikedash='dash',
             spikemode='toaxis',  # Extends TO the axis (not across entire plot)
@@ -224,7 +231,7 @@ def _create_chart_html(
         .modebar-group {{
             display: flex !important;
             flex-shrink: 0 !important;
-            background: #1a1a2e !important;
+            background: {TOOLBAR_SURFACE_BG} !important;
             border: 1px solid #404040 !important;
             border-radius: 8px !important;
             padding: 4px !important;
@@ -234,11 +241,11 @@ def _create_chart_html(
             padding: 4px 8px !important;
         }}
         .modebar-btn:hover {{
-            background-color: #1a2030 !important;
+            background-color: {TOOLBAR_SURFACE_HOVER_BG} !important;
             border-radius: 4px !important;
         }}
         .modebar-btn.active {{
-            background-color: #00ACFF !important;
+            background-color: {cfg.color_accent} !important;
             border-radius: 4px !important;
         }}
         /* Make toolbar icons brighter */
@@ -247,7 +254,7 @@ def _create_chart_html(
             opacity: 1 !important;
         }}
         .modebar-btn:hover path {{
-            fill: #4FC3F7 !important;
+            fill: {cfg.color_accent} !important;
         }}
         /* Custom crosshair lines - dashed style */
         .crosshair-line {{
@@ -257,13 +264,13 @@ def _create_chart_html(
         }}
         .crosshair-h {{
             height: 0;
-            border-top: 1px dashed #00ACFF;
+            border-top: 1px dashed {cfg.color_accent};
             left: 0;
             right: 0;
         }}
         .crosshair-v {{
             width: 0;
-            border-left: 1px dashed #00ACFF;
+            border-left: 1px dashed {cfg.color_accent};
             top: 50px;
             bottom: 50px;
         }}
@@ -462,7 +469,7 @@ def _create_chart_html(
                         update[key + '.showline'] = false;
                         update[key + '.tickfont.color'] = '#6b7080';
                         update[key + '.title.font.color'] = '#6b7080';
-                        update[key + '.spikecolor'] = '#00ACFF';
+                        update[key + '.spikecolor'] = {accent_js};
                         update[key + '.zerolinecolor'] = 'rgba(255,255,255,0.08)';
                         update[key + '.showspikes'] = false;
                     }}
@@ -473,7 +480,7 @@ def _create_chart_html(
                         update[key + '.showline'] = false;
                         update[key + '.tickfont.color'] = '#6b7080';
                         update[key + '.title.font.color'] = '#6b7080';
-                        update[key + '.spikecolor'] = '#00ACFF';
+                        update[key + '.spikecolor'] = {accent_js};
                         update[key + '.zerolinecolor'] = 'rgba(255,255,255,0.08)';
                         update[key + '.showspikes'] = false;
                     }}
@@ -488,7 +495,7 @@ def _create_chart_html(
                 if (svgContainer) svgContainer.style.setProperty('background-color', '#06080e', 'important');
                 if (mainSvg) mainSvg.style.setProperty('background', '#06080e', 'important');
 
-                setCrosshairColor('#00ACFF');
+                setCrosshairColor({accent_js});
             }} else {{
                 // Light theme colors
                 update['paper_bgcolor'] = '#ffffff';
@@ -679,6 +686,9 @@ def _create_table_html(
     # JSON-encode the download filename so quotes in the title cannot break
     # the surrounding JS string literal.
     csv_filename = json.dumps(f'{title.replace(" ", "_")}.csv')
+    # Signed-value styles, JSON-encoded for safe interpolation into JS
+    value_up_style = json.dumps(f"color: {cfg.color_value_up};")
+    value_down_style = json.dumps(f"color: {cfg.color_value_down};")
 
     html = f'''<!DOCTYPE html>
 <html lang="en">
@@ -825,7 +835,7 @@ def _create_table_html(
                     var val = cell === null ? '' : cell;
                     var style = '';
                     if (typeof cell === 'number') {{
-                        style = cell < 0 ? 'color: #e4003a;' : cell > 0 ? 'color: #00ACFF;' : '';
+                        style = cell < 0 ? {value_down_style} : cell > 0 ? {value_up_style} : '';
                     }}
                     bodyHtml += '<td style="' + style + '">' + val + '</td>';
                 }});
