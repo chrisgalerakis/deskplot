@@ -47,6 +47,7 @@ deskplot gives you a third option: **a real desktop chart viewer in one line of 
 - **Custom toolbar** — grouped, bottom-centered mode bar: zoom, pan, unified tooltip, spike lines, crosshair cursor, and drawing tools (trend lines, rectangles, freehand)
 - **One-click PNG export** — exports the full window including the branded header bar (chart captured via `Plotly.toImage`, header composited with vendored [html2canvas](https://html2canvas.hertzen.com/))
 - **Brandable header bar** — put your own name, colors, and attribution on every chart window with one `deskplot.configure()` call
+- **Persistent configuration** — or skip the call entirely: drop a `deskplot.toml` next to your project (or in your user config dir) and every script picks up your branding automatically
 - **Interactive DataFrame tables** — display any pandas DataFrame as a sortable dark-themed table with CSV export
 - **Graceful degradation** — if pywebview can't run (headless server, SSH session, missing OS webview), the same HTML opens in your default browser. Nothing breaks.
 - **Offline-safe** — Plotly.js and html2canvas are embedded into the generated HTML; no CDN calls at render time
@@ -132,7 +133,7 @@ df = pd.DataFrame({"Asset": ["ES", "NQ", "CL"], "Position": [1.2, -0.4, 0.8]})
 deskplot.show_table(df, title="Positioning", source="Internal model")
 ```
 
-Sortable columns, alternating row colors, negative numbers in red, positive in blue, and an Export CSV button.
+Sortable columns, alternating row colors, signed-value coloring (blue up / red down by default, configurable via `color_value_up` / `color_value_down`), and an Export CSV button.
 
 ### Brand it as your own
 
@@ -142,13 +143,14 @@ import deskplot
 deskplot.configure(
     brand="ACME RESEARCH",          # header bar text
     brand_secondary="MACRO DESK",   # optional second label
-    color_primary="#00C853",        # brand accent color
+    color_primary="#00C853",        # button/control accent color
+    color_brand="#ffffff",          # optional: wordmark color, decoupled from buttons
     source="ACME Research",         # default source attribution
     export_prefix="acme_chart",     # exported file names
 )
 ```
 
-Every window now carries your identity — useful for research shops, newsletters, and anyone publishing screenshots of their charts.
+Every window now carries your identity — useful for research shops, newsletters, and anyone publishing screenshots of their charts. To set this once per project or per machine instead of per script, use a [`deskplot.toml` file](#persistent-configuration-deskplottoml).
 
 ## How it works
 
